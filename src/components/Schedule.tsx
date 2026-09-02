@@ -40,6 +40,18 @@ function ServiceIcon({ service }: { service: string }) {
 }
 
 function AccessModal({ lesson, onClose }: { lesson: Lesson; onClose: () => void }) {
-  const copy = (value: string) => navigator.clipboard?.writeText(value)
-  return <div className="modal-backdrop" onClick={onClose}><section className="access-modal" onClick={event => event.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="access-title"><button className="modal-close" onClick={onClose} aria-label="Закрити">×</button><p className="modal-label">ZOOM</p><h2 id="access-title">{lesson.subject}</h2><div className="access-row"><span>Код конференції</span><strong>{lesson.access?.code}</strong><button onClick={() => copy(lesson.access?.code ?? '')}>Копіювати</button></div><div className="access-row"><span>Пароль</span><strong>{lesson.access?.password}</strong><button onClick={() => copy(lesson.access?.password ?? '')}>Копіювати</button></div></section></div>
+  const [copied, setCopied] = useState<'code' | 'password' | null>(null)
+  const [copyError, setCopyError] = useState(false)
+  const copy = async (value: string, field: 'code' | 'password') => {
+    try {
+      if (!navigator.clipboard) throw new Error('Clipboard unavailable')
+      await navigator.clipboard.writeText(value)
+      setCopied(field)
+      setCopyError(false)
+      window.setTimeout(() => setCopied(current => current === field ? null : current), 2000)
+    } catch {
+      setCopyError(true)
+    }
+  }
+  return <div className="modal-backdrop" onClick={onClose}><section className="access-modal" onClick={event => event.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="access-title"><button className="modal-close" onClick={onClose} aria-label="Закрити">×</button><p className="modal-label">ZOOM</p><h2 id="access-title">{lesson.subject}</h2><div className="access-row"><span>Код конференції</span><strong>{lesson.access?.code}</strong><button className={copied === 'code' ? 'copied' : ''} onClick={() => copy(lesson.access?.code ?? '', 'code')} aria-label="Скопіювати код конференції">{copied === 'code' ? 'Скопійовано' : 'Копіювати'}</button></div><div className="access-row"><span>Пароль</span><strong>{lesson.access?.password}</strong><button className={copied === 'password' ? 'copied' : ''} onClick={() => copy(lesson.access?.password ?? '', 'password')} aria-label="Скопіювати пароль">{copied === 'password' ? 'Скопійовано' : 'Копіювати'}</button></div>{copyError && <p className="copy-error" role="alert">Не вдалося скопіювати. Спробуй ще раз.</p>}<p className="sr-only" aria-live="polite">{copied ? 'Скопійовано' : ''}</p></section></div>
 }
