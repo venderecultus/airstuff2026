@@ -41,6 +41,7 @@ const urls = {
   umMathLecture: 'https://meet.google.com/nwp-nvxj-sxi',
   umMathPractice: 'https://meet.google.com/nsg-drih-yet',
   umOs: 'https://us04web.zoom.us/j/7609594835?pwd=MGhuVllSVUo4bXFUeVVGTDI4QWRZUT09',
+  umPhysics: 'https://us02web.zoom.us/j/86444228396?pwd=92cUlZi0GebGV4XqqQwDDLffulqFhD.1',
 } as const
 
 const access = {
@@ -97,11 +98,11 @@ const schedules: Record<string, RawLesson[]> = {
     [1, 3, 'Програмування та теорія алгоритмів', 'Лекція', 'Сперанський В.О.', 'all', '1–15'],
     [2, 2, 'Вища математика', 'Лекція', 'Крапива Н.В.', 'all', '1–15', urls.umMathLecture],
     [2, 3, 'Вища математика', 'Практика', 'Крапива Н.В.', 'all', '1–15', urls.umMathPractice],
-    [3, 2, 'Фізика', 'Лабораторна', 'Гавриченко В. Ф.', 'odd', '1–15 нп', 'https://us05web.zoom.us/j/82433622896?pwd=CVOSaRfROFGrKAW3EWIaShsGqMdjHv.1'],
-    [3, 2, 'Фізика', 'Практика', '', 'even', '2–14 пар'],
+    [3, 2, 'Фізика', 'Лабораторна', 'Гавриченко Віктор Федорович', 'odd', '1–15 нп', 'https://us05web.zoom.us/j/82433622896?pwd=CVOSaRfROFGrKAW3EWIaShsGqMdjHv.1'],
+    [3, 2, 'Фізика', 'Практика', 'Маслов О.В.', 'even', '2–14 пар', urls.umPhysics],
     [3, 3, 'Іноземна мова', 'Практика', 'Присяжнюк О.Я.', 'all', '1–15', urls.englishPrysiazhniuk],
     [4, 1, 'Фізичне виховання', 'Практика', 'Бєловол Т.Г.', 'all', '1–15', urls.physicalEducation],
-    [4, 2, 'Фізика', 'Лекція', 'Маслов О.В.'],
+    [4, 2, 'Фізика', 'Лекція', 'Маслов О.В.', 'all', '1–15', urls.umPhysics, { code: '864 4422 8396', password: '306452' }],
     [4, 3, 'Іноземна мова', 'Практика', 'Добровольська Ю.Л.', 'all', '1–15', urls.englishDobrovolska],
     [5, 2, 'Дискретні моделі та структури', 'Практика', 'Пелих С.М.', 'all', '1–15', urls.umDiscrete],
     [5, 3, 'Організація і архітектура ОС', 'Лекція', 'Максимов М.В.', 'odd', '3–15 нп', urls.umOs],
