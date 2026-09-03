@@ -98,7 +98,7 @@ const schedules: Record<string, RawLesson[]> = {
     [1, 3, 'Програмування та теорія алгоритмів', 'Лекція', 'Сперанський В.О.', 'all', '1–15'],
     [2, 2, 'Вища математика', 'Лекція', 'Крапива Н.В.', 'all', '1–15', urls.umMathLecture],
     [2, 3, 'Вища математика', 'Практика', 'Крапива Н.В.', 'all', '1–15', urls.umMathPractice],
-    [3, 2, 'Фізика', 'Лабораторна', 'Гавриченко Віктор Федорович', 'odd', '1–15 нп', 'https://us05web.zoom.us/j/82433622896?pwd=CVOSaRfROFGrKAW3EWIaShsGqMdjHv.1'],
+    [3, 2, 'Фізика', 'Лабораторна', 'Гавриченко В.Ф.', 'odd', '1–15 нп', 'https://us05web.zoom.us/j/82433622896?pwd=CVOSaRfROFGrKAW3EWIaShsGqMdjHv.1'],
     [3, 2, 'Фізика', 'Практика', 'Маслов О.В.', 'even', '2–14 пар', urls.umPhysics],
     [3, 3, 'Іноземна мова', 'Практика', 'Присяжнюк О.Я.', 'all', '1–15', urls.englishPrysiazhniuk],
     [4, 1, 'Фізичне виховання', 'Практика', 'Бєловол Т.Г.', 'all', '1–15', urls.physicalEducation],
