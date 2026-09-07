@@ -1,16 +1,31 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import type { Group, Lesson, ScheduleFilter } from '../types'
 import { getLessonsForGroup } from '../data'
 
 const days = ['', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', "П’ятниця"]
 const types = { lecture: ['Лекція', 'blue'], practice: ['Практика', 'green'], lab: ['Лабораторна', 'orange'] } as const
+const evenWeekStart = Date.UTC(2026, 8, 7)
+
+function getCurrentWeek(date = new Date()): Lesson['weekType'] {
+  const monday = new Date(date)
+  const day = monday.getDay() || 7
+  monday.setDate(monday.getDate() - day + 1)
+  const mondayUtc = Date.UTC(monday.getFullYear(), monday.getMonth(), monday.getDate())
+  const weeksSinceStart = Math.floor((mondayUtc - evenWeekStart) / (7 * 24 * 60 * 60 * 1000))
+  return Math.abs(weeksSinceStart) % 2 === 0 ? 'even' : 'odd'
+}
 
 export default function Schedule({ group, onBack }: { group: Group; onBack: () => void }) {
   const [filter, setFilter] = useState<ScheduleFilter>('week')
   const [accessLesson, setAccessLesson] = useState<Lesson | null>(null)
-  const today = new Date().getDay() || 7
+  const [now, setNow] = useState(() => new Date())
+  useEffect(() => {
+    const timer = window.setInterval(() => setNow(new Date()), 60_000)
+    return () => window.clearInterval(timer)
+  }, [])
+  const today = now.getDay() || 7
   const lessons = useMemo(() => getLessonsForGroup(group.id), [group.id])
-  const currentWeek = 'odd'
+  const currentWeek = getCurrentWeek(now)
   const visible = (filter === 'today' ? lessons.filter(l => l.dayOfWeek === today) : lessons)
     .filter(l => filter === 'all' || l.weekType === 'all' || l.weekType === currentWeek)
   const grouped = useMemo(() => visible.reduce<Record<number, Lesson[]>>((all, lesson) => { (all[lesson.dayOfWeek] ??= []).push(lesson); return all }, {}), [visible])
@@ -19,7 +34,7 @@ export default function Schedule({ group, onBack }: { group: Group; onBack: () =
   return <main className="schedule-page">
     <header className="topbar"><button className="back-button" onClick={onBack}><b>←</b><span>Змінити групу</span></button><span /></header>
     <div className="schedule-wrap">
-      <section className="schedule-intro"><div><h1>{group.name}</h1></div><div className="week-badge">Непарний тиждень</div></section>
+      <section className="schedule-intro"><div><h1>{group.name}</h1></div><div className="week-badge">{currentWeek === 'even' ? 'Парний' : 'Непарний'} тиждень</div></section>
       <nav className="tabs" aria-label="Період розкладу">{tabs.map(([value, label]) => <button className={filter === value ? 'active' : ''} key={value} onClick={() => setFilter(value)}>{label}</button>)}</nav>
       <section className="schedule-list">{Object.entries(grouped).map(([day, dayLessons]) => <div className={`day-block ${Number(day) === today ? 'is-today' : ''}`} key={day}><div className="day-title"><span>{days[Number(day)]}</span>{Number(day) === today && <small>СЬОГОДНІ</small>}</div><div className="lesson-list">{dayLessons.map(lesson => <LessonItem lesson={lesson} key={lesson.id} onOpen={setAccessLesson} />)}</div></div>)}</section>
       {!visible.length && <div className="empty-state"><strong>Сьогодні занять немає</strong><span>Можеш видихнути. Або повторити матеріал.</span></div>}
