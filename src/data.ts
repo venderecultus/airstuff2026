@@ -138,7 +138,7 @@ const schedules: Record<string, RawLesson[]> = {
   ],
 }
 
-export const getLessonsForGroup = (groupId: string): Lesson[] => (schedules[groupId] ?? []).map(([day, slot, subject, type = 'Заняття', teacher = '', weekType = 'all', period = '1–15', link, lessonAccess]) => ({
+const makeLessons = (groupId: string): Lesson[] => (schedules[groupId] ?? []).map(([day, slot, subject, type = 'Заняття', teacher = '', weekType = 'all', period = '1–15', link, lessonAccess]) => ({
   id: `${groupId}-${day}-${slot}-${subject}-${period}`,
   subject,
   teacher,
@@ -152,3 +152,24 @@ export const getLessonsForGroup = (groupId: string): Lesson[] => (schedules[grou
   dayOfWeek: day,
   weekType,
 }))
+
+const saturdayTransfers = [
+  ['2026-09-19', 1, 'even'],
+  ['2026-09-26', 2, 'even'],
+  ['2026-10-03', 3, 'even'],
+  ['2026-10-10', 4, 'even'],
+  ['2026-10-17', 5, 'even'],
+  ['2026-10-24', 1, 'odd'],
+  ['2026-10-31', 2, 'odd'],
+  ['2026-11-07', 3, 'odd'],
+  ['2026-11-14', 4, 'odd'],
+  ['2026-11-21', 5, 'odd'],
+] as const
+
+export const getLessonsForGroup = (groupId: string): Lesson[] => {
+  const lessons = makeLessons(groupId)
+  const saturdays = saturdayTransfers.flatMap(([date, sourceDay, weekType]) => lessons
+    .filter(lesson => lesson.dayOfWeek === sourceDay && (lesson.weekType === 'all' || lesson.weekType === weekType))
+    .map(lesson => ({ ...lesson, id: `${lesson.id}-${date}`, dayOfWeek: 6, date, weekType })))
+  return [...lessons, ...saturdays]
+}

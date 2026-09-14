@@ -2,9 +2,10 @@ import { useEffect, useMemo, useState } from 'react'
 import type { Group, Lesson, ScheduleFilter } from '../types'
 import { getLessonsForGroup } from '../data'
 
-const days = ['', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', "П’ятниця"]
+const days = ['', 'Понеділок', 'Вівторок', 'Середа', 'Четвер', "П’ятниця", 'Субота']
 const types = { lecture: ['Лекція', 'blue'], practice: ['Практика', 'green'], lab: ['Лабораторна', 'orange'] } as const
 const evenWeekStart = Date.UTC(2026, 8, 7)
+const firstSaturday = Date.UTC(2026, 8, 19)
 
 function getCurrentWeek(date = new Date()): Lesson['weekType'] {
   const monday = new Date(date)
@@ -13,6 +14,16 @@ function getCurrentWeek(date = new Date()): Lesson['weekType'] {
   const mondayUtc = Date.UTC(monday.getFullYear(), monday.getMonth(), monday.getDate())
   const weeksSinceStart = Math.floor((mondayUtc - evenWeekStart) / (7 * 24 * 60 * 60 * 1000))
   return Math.abs(weeksSinceStart) % 2 === 0 ? 'even' : 'odd'
+}
+
+function getSaturdayForWeek(date: Date): string {
+  const saturday = new Date(date)
+  const day = saturday.getDay() || 7
+  saturday.setDate(saturday.getDate() + 6 - day)
+  const saturdayUtc = Date.UTC(saturday.getFullYear(), saturday.getMonth(), saturday.getDate())
+  const weeksSinceStart = Math.floor((saturdayUtc - firstSaturday) / (7 * 24 * 60 * 60 * 1000))
+  if (weeksSinceStart < 0 || weeksSinceStart > 9) return ''
+  return saturday.toISOString().slice(0, 10)
 }
 
 export default function Schedule({ group, onBack }: { group: Group; onBack: () => void }) {
@@ -24,11 +35,17 @@ export default function Schedule({ group, onBack }: { group: Group; onBack: () =
     return () => window.clearInterval(timer)
   }, [])
   const today = now.getDay() || 7
+  const currentSaturday = getSaturdayForWeek(now)
   const lessons = useMemo(() => getLessonsForGroup(group.id), [group.id])
   const currentWeek = getCurrentWeek(now)
-  const visible = (filter === 'today' ? lessons.filter(l => l.dayOfWeek === today) : lessons)
-    .filter(l => filter === 'all' || l.weekType === 'all' || l.weekType === currentWeek)
-  const grouped = useMemo(() => visible.reduce<Record<number, Lesson[]>>((all, lesson) => { (all[lesson.dayOfWeek] ??= []).push(lesson); return all }, {}), [visible])
+  const todayDate = now.toISOString().slice(0, 10)
+  const visible = lessons
+    .filter(lesson => filter !== 'all' || !lesson.date)
+    .filter(lesson => filter === 'today'
+      ? lesson.date ? lesson.date === todayDate : lesson.dayOfWeek === today
+      : !lesson.date || lesson.date === currentSaturday)
+    .filter(l => filter === 'all' || l.date || l.weekType === 'all' || l.weekType === currentWeek)
+  const grouped = useMemo(() => visible.reduce<Record<string, Lesson[]>>((all, lesson) => { const key = lesson.date ?? String(lesson.dayOfWeek); (all[key] ??= []).push(lesson); return all }, {}), [visible])
   const tabs: [ScheduleFilter, string][] = [['today', 'На сьогодні'], ['week', 'Цього тижня'], ['all', 'Весь розклад']]
 
   return <main className="schedule-page">
@@ -36,7 +53,7 @@ export default function Schedule({ group, onBack }: { group: Group; onBack: () =
     <div className="schedule-wrap">
       <section className="schedule-intro"><div><h1>{group.name}</h1></div><div className="week-badge">{currentWeek === 'even' ? 'Парний' : 'Непарний'} тиждень</div></section>
       <nav className="tabs" aria-label="Період розкладу">{tabs.map(([value, label]) => <button className={filter === value ? 'active' : ''} key={value} onClick={() => setFilter(value)}>{label}</button>)}</nav>
-      <section className="schedule-list">{Object.entries(grouped).map(([day, dayLessons]) => <div className={`day-block ${Number(day) === today ? 'is-today' : ''}`} key={day}><div className="day-title"><span>{days[Number(day)]}</span>{Number(day) === today && <small>СЬОГОДНІ</small>}</div><div className="lesson-list">{dayLessons.map(lesson => <LessonItem lesson={lesson} key={lesson.id} onOpen={setAccessLesson} />)}</div></div>)}</section>
+       <section className="schedule-list">{Object.entries(grouped).map(([day, dayLessons]) => { const date = dayLessons[0].date; return <div className={`day-block ${date === todayDate || (!date && Number(day) === today) ? 'is-today' : ''}`} key={day}><div className="day-title"><span>{date ? 'Субота' : days[Number(day)]}</span>{(date === todayDate || (!date && Number(day) === today)) && <small>СЬОГОДНІ</small>}</div><div className="lesson-list">{dayLessons.map(lesson => <LessonItem lesson={lesson} key={lesson.id} onOpen={setAccessLesson} />)}</div></div>})}</section>
       {!visible.length && <div className="empty-state"><strong>Сьогодні занять немає</strong><span>Можеш видихнути. Або повторити матеріал.</span></div>}
     </div>{accessLesson && <AccessModal lesson={accessLesson} onClose={() => setAccessLesson(null)} />}
   </main>

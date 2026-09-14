@@ -13,6 +13,7 @@ export interface Lesson {
   startTime: string
   endTime: string
   dayOfWeek: number // 1-7 (Пн-Вс)
+  date?: string
   weekType: 'all' | 'odd' | 'even'
   period?: string
   link?: string
