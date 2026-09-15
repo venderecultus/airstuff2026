@@ -42,6 +42,7 @@ const urls = {
   umMathPractice: 'https://meet.google.com/nsg-drih-yet',
   umOs: 'https://us04web.zoom.us/j/7609594835?pwd=MGhuVllSVUo4bXFUeVVGTDI4QWRZUT09',
   umPhysics: 'https://us02web.zoom.us/j/86444228396?pwd=92cUlZi0GebGV4XqqQwDDLffulqFhD.1',
+  umProgramming: 'https://us02web.zoom.us/j/5239790272?pwd=VG5JaUhUL0UvSTd1N3RxakxpOUtYZz09',
 } as const
 
 const access = {
@@ -95,7 +96,7 @@ const schedules: Record<string, RawLesson[]> = {
   ],
   'UM-261': [
     [1, 2, 'Дискретні моделі та структури', 'Лекція', 'Пелих С.М.', 'all', '1–15', urls.umDiscrete],
-    [1, 3, 'Програмування та теорія алгоритмів', 'Лекція', 'Сперанський В.О.', 'all', '1–15'],
+    [1, 3, 'Програмування та теорія алгоритмів', 'Лекція', 'Сперанський В.О.', 'all', '1–15', urls.umProgramming],
     [2, 2, 'Вища математика', 'Лекція', 'Крапива Н.В.', 'all', '1–15', urls.umMathLecture],
     [2, 3, 'Вища математика', 'Практика', 'Крапива Н.В.', 'all', '1–15', urls.umMathPractice],
     [3, 2, 'Фізика', 'Лабораторна', 'Гавриченко В.Ф.', 'odd', '1–15 нп', 'https://us05web.zoom.us/j/82433622896?pwd=CVOSaRfROFGrKAW3EWIaShsGqMdjHv.1'],
