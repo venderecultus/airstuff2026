@@ -29,7 +29,7 @@ const urls = {
   ukModeling: 'https://meet.google.com/emn-bhaz-ooy',
   ueMath: 'https://us02web.zoom.us/j/82028486271?pwd=hdHNRafc8SMe79ffrwb7K37ANZbb39.1',
   ueIntegrity: 'https://us05web.zoom.us/j/82639580085?pwd=Zt6jfaXbqDTaIg8goQbudRlaBeGVBd.1',
-  englishAndreichkova: 'https://meet.google.com/bkb-ofud-qdg',
+  englishAndreichkova: 'https://meet.google.com/aao-ecku-zsv',
   englishDiyachenko: 'https://meet.google.com/wqe-moyd-rzc',
   englishDobrovolska: 'https://us04web.zoom.us/j/8763362420?pwd=S3dlckMwWEpOaFRudG14MGk4V3Y3UT09',
   englishLebedieva: 'https://meet.google.com/ypn-jdur-ebc',
@@ -92,7 +92,7 @@ const schedules: Record<string, RawLesson[]> = {
     [4, 2, '3-D моделювання', 'Лабораторна', 'Марущак Ю.В.', 'odd', '3–15 нп', urls.ukModeling],
     [4, 2, 'Алгоритми та методи обчислень', 'Лабораторна', 'Нестерюк О.Г.', 'even', '2–14 пар', urls.ukAlgorithms, access.algorithms],
     [5, 2, 'Програмування', 'Лекція', 'Головачова О.В.', 'all', '1–15', undefined, access.programming],
-    [5, 3, 'Іноземна мова', 'Практика', 'Дьяченко Г.Ф.', 'all', '1–15', urls.englishDiyachenko],
+    [5, 3, 'Іноземна мова', 'Практика', '', 'all', '1–15', 'https://meet.google.com/psq-yzyc-ewq'],
   ],
   'UM-261': [
     [1, 2, 'Дискретні моделі та структури', 'Лекція', 'Пелих С.М.', 'all', '1–15', urls.umDiscrete],
